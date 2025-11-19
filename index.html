@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Test Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        h2 { text-align: center; }
+        .box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            border-radius: 5px;
+            border: 1px solid #aaa;
+        }
+        button {
+            margin-top: 12px;
+            padding: 10px 14px;
+            border-radius: 6px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0059c9;
+        }
+        .log {
+            margin-top: 20px;
+            background: #f2f2f2;
+            padding: 10px;
+            border-radius: 6px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Simple Intrusion Test Page</h2>
+
+    <div class="box">
+        <h3>Submit Comment</h3>
+        <input id="name" placeholder="Your Name">
+
+        <textarea id="comment" placeholder="Your Comment" rows="4"></textarea>
+
+        <button onclick="submitComment()">Submit</button>
+    </div>
+
+    <div class="log" id="logBox"></div>
+
+    <script>
+        // Suspicious patterns (basic XSS + SQL)
+        const patterns = [
+            /<script.*?>/i,
+            /<\/script>/i,
+            /onerror=/i,
+            /onload=/i,
+            /\bUNION\b/i,
+            /\bSELECT\b/i,
+            /\bDROP\b/i,
+            /--/g,
+            /;/g
+        ];
+
+        function detectIntrusion(text) {
+            for (let p of patterns) {
+                if (p.test(text)) {
+                    return p.toString();
+                }
+            }
+            return false;
+        }
+
+        function submitComment() {
+            const name = document.getElementById("name").value;
+            const comment = document.getElementById("comment").value;
+
+            const combined = name + " " + comment;
+
+            const intrusion = detectIntrusion(combined);
+
+            if (intrusion) {
+                alert("🔴 Intrusion Detected!\n\nPattern matched: " + intrusion);
+                addLog("🚨 Intrusion detected! Pattern: " + intrusion);
+            } else {
+                alert("Comment submitted safely.");
+                addLog("✔ Safe comment: " + combined);
+            }
+        }
+
+        function addLog(text) {
+            const logBox = document.getElementById("logBox");
+            logBox.textContent = text + "\n\n" + logBox.textContent;
+        }
+    </script>
+
+</body>
+</html>
