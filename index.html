@@ -1,109 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Simple Test Website</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 700px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-        h2 { text-align: center; }
-        .box {
-            border: 1px solid #ccc;
-            padding: 20px;
-            border-radius: 8px;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            margin-top: 8px;
-            border-radius: 5px;
-            border: 1px solid #aaa;
-        }
-        button {
-            margin-top: 12px;
-            padding: 10px 14px;
-            border-radius: 6px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0059c9;
-        }
-        .log {
-            margin-top: 20px;
-            background: #f2f2f2;
-            padding: 10px;
-            border-radius: 6px;
-            white-space: pre-wrap;
-        }
-    </style>
+    <title>Intrusion Detection Test</title>
 </head>
 <body>
-
-    <h2>Simple Intrusion Test Page</h2>
-
-    <div class="box">
-        <h3>Submit Comment</h3>
-        <input id="name" placeholder="Your Name">
-
-        <textarea id="comment" placeholder="Your Comment" rows="4"></textarea>
-
-        <button onclick="submitComment()">Submit</button>
-    </div>
-
-    <div class="log" id="logBox"></div>
+    <h1>Intrusion Detection Test Website</h1>
+    <p>Try to inspect, open console, or break the page.</p>
 
     <script>
-        // Suspicious patterns (basic XSS + SQL)
-        const patterns = [
-            /<script.*?>/i,
-            /<\/script>/i,
-            /onerror=/i,
-            /onload=/i,
-            /\bUNION\b/i,
-            /\bSELECT\b/i,
-            /\bDROP\b/i,
-            /--/g,
-            /;/g
-        ];
-
-        function detectIntrusion(text) {
-            for (let p of patterns) {
-                if (p.test(text)) {
-                    return p.toString();
-                }
+        // Detect F12
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "F12") {
+                alert("⚠️ Intrusion attempt detected (F12 pressed)");
             }
-            return false;
-        }
+        });
 
-        function submitComment() {
-            const name = document.getElementById("name").value;
-            const comment = document.getElementById("comment").value;
-
-            const combined = name + " " + comment;
-
-            const intrusion = detectIntrusion(combined);
-
-            if (intrusion) {
-                alert("🔴 Intrusion Detected!\n\nPattern matched: " + intrusion);
-                addLog("🚨 Intrusion detected! Pattern: " + intrusion);
-            } else {
-                alert("Comment submitted safely.");
-                addLog("✔ Safe comment: " + combined);
+        // Detect CTRL+SHIFT+I
+        document.addEventListener("keydown", function (e) {
+            if (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "i")) {
+                alert("⚠️ Intrusion attempt detected (Inspect Element)");
             }
-        }
+        });
 
-        function addLog(text) {
-            const logBox = document.getElementById("logBox");
-            logBox.textContent = text + "\n\n" + logBox.textContent;
-        }
+        // Detect Right-Click
+        document.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+            alert("⚠️ Intrusion attempt detected (Right Click)");
+        });
+
+        // Detect Developer Tools Open (advanced)
+        let devtools = false;
+        const element = new Image();
+        Object.defineProperty(element, 'id', {
+            get: function () {
+                devtools = true;
+                alert("⚠️ DevTools Detected!");
+            }
+        });
+
+        console.log(element);
     </script>
-
 </body>
 </html>
+
